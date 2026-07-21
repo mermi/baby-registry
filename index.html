@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joseph's Baby Registry</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <meta charset="utf-8">
-<title>Joseph's Baby Registry</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -19,6 +19,15 @@
   a:hover { color:#6B5230; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none;} }
   @keyframes bob { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-5px);} }
+  @media (max-width: 600px) {
+    .registry-shell { padding:32px 18px 72px !important; }
+    .registry-hero-title { font-size:44px !important; }
+    .registry-section-heading { align-items:flex-start !important; flex-wrap:wrap; gap:4px 10px !important; }
+    .registry-item-row { align-items:flex-start !important; flex-wrap:wrap; gap:10px 12px !important; padding:15px !important; }
+    .registry-item-dot { margin-top:5px; }
+    .registry-item-content { flex:1 1 calc(100% - 30px) !important; }
+    .registry-item-action { margin-left:26px; max-width:calc(100% - 26px); white-space:normal; text-align:center; }
+  }
 </style>
 <script src="./image-slot.js"></script>
 <script>
@@ -74,18 +83,22 @@
 </script>
 </helmet>
 
-<div style="max-width:880px; margin:0 auto; padding:56px 28px 96px">
+<div class="registry-shell" style="max-width:880px; margin:0 auto; padding:56px 28px 96px">
 
   <header style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; padding-bottom:36px">
-    <div style="width:180px; height:180px; border:6px solid #FFFFFF; border-radius:50%; box-shadow:0 4px 18px rgba(90,80,60,0.14); overflow:hidden">
-      <image-slot id="joseph-photo" shape="circle" src="./assets/joseph-illustration.png" placeholder="Drop Joseph's illustration or ultrasound here"></image-slot>
+    <div role="group" aria-label="{{ copy.languageSwitcher }}" style="align-self:flex-end; display:inline-flex; gap:4px; background:#F1E8D8; border:1px solid #E3D7C3; border-radius:99px; padding:4px">
+      <button onClick="{{ chooseEnglish }}" aria-pressed="{{ englishSelected }}" aria-label="{{ copy.switchToEnglish }}" style="cursor:pointer; border:0; border-radius:99px; padding:6px 11px; font-family:'Karla',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; background:{{ englishToggleBg }}; color:{{ englishToggleColor }}; box-shadow:{{ englishToggleShadow }}">EN</button>
+      <button onClick="{{ chooseFrench }}" aria-pressed="{{ frenchSelected }}" aria-label="{{ copy.switchToFrench }}" style="cursor:pointer; border:0; border-radius:99px; padding:6px 11px; font-family:'Karla',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.08em; background:{{ frenchToggleBg }}; color:{{ frenchToggleColor }}; box-shadow:{{ frenchToggleShadow }}">FR</button>
     </div>
-    <p style="margin:0; font-size:13px; letter-spacing:0.22em; text-transform:uppercase; color:#9C927F">Baby registry</p>
-    <h1 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:58px; line-height:1.05; letter-spacing:-0.01em">Waiting for Joseph</h1>
-    <p style="margin:0; font-size:16px; color:#7A7263">Expected October 8, 2026 · Manel, waiting impatiently</p>
-    <p style="margin:10px 0 0; max-width:520px; font-size:17px; line-height:1.6; color:#5C5546; text-wrap:pretty">A little note from Manel — thank you for helping us welcome Joseph. If you'd like to gift something, pick an item below and tap <em>"I'll get this"</em> so no one doubles up. With love.</p>
-    <div style="max-width:560px; background:#F1F0E2; border:1px solid #DDD9C0; border-radius:12px; padding:12px 20px; font-size:15px; line-height:1.5; color:#5C6046"><strong>Pre-loved is very welcome!</strong> Reused and second-hand items are more than welcome for everything — except the Hygiene &amp; Health list, where we'd prefer new.</div>
-    <div style="margin-top:4px; font-size:14px; color:#9C927F">{{ claimedCount }} of {{ totalCount }} items claimed</div>
+    <div style="width:180px; height:180px; border:6px solid #FFFFFF; border-radius:50%; box-shadow:0 4px 18px rgba(90,80,60,0.14); overflow:hidden">
+      <image-slot id="joseph-photo" shape="circle" src="./assets/joseph-illustration.png" placeholder="{{ copy.imagePlaceholder }}"></image-slot>
+    </div>
+    <p style="margin:0; font-size:13px; letter-spacing:0.22em; text-transform:uppercase; color:#9C927F">{{ copy.eyebrow }}</p>
+    <h1 class="registry-hero-title" style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:58px; line-height:1.05; letter-spacing:-0.01em">{{ copy.heroTitle }}</h1>
+    <p style="margin:0; font-size:16px; color:#7A7263">{{ copy.expected }}</p>
+    <p style="margin:10px 0 0; max-width:520px; font-size:17px; line-height:1.6; color:#5C5546; text-wrap:pretty">{{ copy.heroNote }}</p>
+    <div style="max-width:560px; background:#F1F0E2; border:1px solid #DDD9C0; border-radius:12px; padding:12px 20px; font-size:15px; line-height:1.5; color:#5C6046"><strong>{{ copy.preLovedTitle }}</strong> {{ copy.preLovedBody }}</div>
+    <div style="margin-top:4px; font-size:14px; color:#9C927F">{{ claimedSummary }}</div>
     <sc-if value="{{ claimMessage }}" hint-placeholder-val="{{ true }}">
       <div role="status" aria-live="polite" style="max-width:560px; border:1px solid {{ claimNoticeBorder }}; background:{{ claimNoticeBg }}; border-radius:10px; padding:9px 14px; font-size:14px; color:{{ claimNoticeColor }}">{{ claimMessage }}</div>
     </sc-if>
@@ -93,7 +106,7 @@
 
   <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="5">
     <section data-screen-label="{{ sec.title }}" style="margin-bottom:48px; animation:fadeUp 0.4s ease both">
-      <div style="display:flex; align-items:baseline; gap:12px; border-bottom:3px dashed {{ sec.color }}; padding-bottom:10px; margin-bottom:6px">
+      <div class="registry-section-heading" style="display:flex; align-items:baseline; gap:12px; border-bottom:3px dashed {{ sec.color }}; padding-bottom:10px; margin-bottom:6px">
         <h2 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:28px">{{ sec.title }}</h2>
         <span style="font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:#9C927F">{{ sec.subtitle }}</span>
       </div>
@@ -102,9 +115,9 @@
       </sc-if>
       <div style="display:flex; flex-direction:column; gap:0">
         <sc-for list="{{ sec.items }}" as="item" hint-placeholder-count="4">
-          <div style="display:flex; align-items:center; gap:16px; padding:16px 18px; margin-top:12px; background:#FFFFFF; border:1px solid #EFE7D8; border-radius:18px; box-shadow:0 2px 8px rgba(120,105,80,0.05); opacity:{{ item.rowOpacity }}">
-            <span style="flex-shrink:0; width:14px; height:14px; border-radius:50%; background:{{ sec.color }}"></span>
-            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+          <div class="registry-item-row" style="display:flex; align-items:center; gap:16px; padding:16px 18px; margin-top:12px; background:#FFFFFF; border:1px solid #EFE7D8; border-radius:18px; box-shadow:0 2px 8px rgba(120,105,80,0.05); opacity:{{ item.rowOpacity }}">
+            <span class="registry-item-dot" style="flex-shrink:0; width:14px; height:14px; border-radius:50%; background:{{ sec.color }}"></span>
+            <div class="registry-item-content" style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
               <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap">
                 <span style="font-size:17px; font-weight:600; text-decoration:{{ item.strike }}">{{ item.name }}</span>
                 <sc-if value="{{ item.qty }}" hint-placeholder-val="{{ true }}">
@@ -123,10 +136,10 @@
               </sc-if>
             </div>
             <sc-if value="{{ item.reserved }}" hint-placeholder-val="{{ false }}">
-              <span style="flex-shrink:0; font-size:13px; font-weight:700; color:#8A6B3F; background:#F3ECDD; border:1px dashed #D8C7A8; border-radius:99px; padding:9px 18px">Manel is getting this one</span>
+              <span class="registry-item-action" style="flex-shrink:0; font-size:13px; font-weight:700; color:#8A6B3F; background:#F3ECDD; border:1px dashed #D8C7A8; border-radius:99px; padding:9px 18px">{{ copy.reservedLabel }}</span>
             </sc-if>
             <sc-if value="{{ item.claimable }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ item.toggle }}" disabled="{{ item.btnDisabled }}" aria-disabled="{{ item.btnDisabled }}" style="flex-shrink:0; cursor:{{ item.btnCursor }}; font-family:'Karla',sans-serif; font-size:14px; font-weight:700; border-radius:99px; padding:9px 18px; border:{{ item.btnBorder }}; background:{{ item.btnBg }}; color:{{ item.btnColor }}; transition:all 0.15s" style-hover="transform:scale(1.06) rotate(-1deg)">{{ item.btnLabel }}</button>
+              <button class="registry-item-action" onClick="{{ item.toggle }}" disabled="{{ item.btnDisabled }}" aria-disabled="{{ item.btnDisabled }}" style="flex-shrink:0; cursor:{{ item.btnCursor }}; font-family:'Karla',sans-serif; font-size:14px; font-weight:700; border-radius:99px; padding:9px 18px; border:{{ item.btnBorder }}; background:{{ item.btnBg }}; color:{{ item.btnColor }}; transition:all 0.15s" style-hover="transform:scale(1.06) rotate(-1deg)">{{ item.btnLabel }}</button>
             </sc-if>
           </div>
         </sc-for>
@@ -136,7 +149,7 @@
 
   <sc-if value="{{ showMom }}" hint-placeholder-val="{{ true }}">
     <details style="margin-top:24px; background:#F6F0E3; border:1px solid #EBE1CD; border-radius:14px; padding:6px 22px">
-      <summary style="cursor:pointer; padding:14px 0; font-family:'Fredoka',sans-serif; font-size:20px; font-weight:600; color:#6B6250">For Manel — postpartum care <span style="font-family:'Karla',sans-serif; font-size:13px; font-weight:400; color:#9C927F; margin-left:8px">only once everything for Joseph is covered</span></summary>
+      <summary style="cursor:pointer; padding:14px 0; font-family:'Fredoka',sans-serif; font-size:20px; font-weight:600; color:#6B6250">{{ copy.momTitle }} <span style="font-family:'Karla',sans-serif; font-size:13px; font-weight:400; color:#9C927F; margin-left:8px">{{ copy.momSubtitle }}</span></summary>
       <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; padding:6px 0 20px">
         <sc-for list="{{ momItems }}" as="m" hint-placeholder-count="4">
           <div style="background:#FFFFFF; border:1px solid #EFE7D8; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; opacity:{{ m.rowOpacity }}">
@@ -144,7 +157,7 @@
             <span style="font-size:15px; font-weight:600; text-decoration:{{ m.strike }}">{{ m.name }}</span>
             <span style="font-size:13px; color:#8A8171">{{ m.note }}</span>
             <sc-if value="{{ m.url }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ m.url }}" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:600; color:#8A6B3F; text-decoration:none; align-self:flex-start; background:#FBF7EF; border:1px solid #E6DCC8; border-radius:99px; padding:3px 10px" style-hover="background:#F7F0E2">View item ↗</a>
+              <a href="{{ m.url }}" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:600; color:#8A6B3F; text-decoration:none; align-self:flex-start; background:#FBF7EF; border:1px solid #E6DCC8; border-radius:99px; padding:3px 10px" style-hover="background:#F7F0E2">{{ copy.viewItem }} ↗</a>
             </sc-if>
             <button onClick="{{ m.toggle }}" disabled="{{ m.btnDisabled }}" aria-disabled="{{ m.btnDisabled }}" style="align-self:flex-start; cursor:{{ m.btnCursor }}; font-family:'Karla',sans-serif; font-size:12.5px; font-weight:700; border-radius:99px; padding:6px 14px; border:{{ m.btnBorder }}; background:{{ m.btnBg }}; color:{{ m.btnColor }}; transition:all 0.15s">{{ m.btnLabel }}</button>
           </div>
@@ -153,13 +166,13 @@
     </details>
   </sc-if>
 
-  <section data-screen-label="Delivery address" style="margin-top:40px; background:#F6F0E3; border:1px solid #EBE1CD; border-radius:14px; padding:24px 28px; display:flex; flex-direction:column; gap:6px">
-    <h2 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px">Delivery address</h2>
-    <p style="margin:2px 0 0; font-size:16px; line-height:1.5; font-weight:600; color:#6B6250">Where to send gifts if you're ordering online and won't be able to join us for the baby shower in mid-September</p>
+  <section data-screen-label="{{ copy.deliveryTitle }}" style="margin-top:40px; background:#F6F0E3; border:1px solid #EBE1CD; border-radius:14px; padding:24px 28px; display:flex; flex-direction:column; gap:6px">
+    <h2 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px">{{ copy.deliveryTitle }}</h2>
+    <p style="margin:2px 0 0; font-size:16px; line-height:1.5; font-weight:600; color:#6B6250">{{ copy.deliveryNote }}</p>
     <p style="margin:8px 0 0; font-size:17px; line-height:1.55; color:#4A4436">Manel Rhaiem<br>Schönhauser Allee 72<br>Gartenhaus, 3. Etage<br>10437 Berlin, Germany</p>
   </section>
 
-  <footer style="text-align:center; margin-top:64px; font-size:14px; color:#9C927F">Thank you for being part of Joseph's welcome party.</footer>
+  <footer style="text-align:center; margin-top:64px; font-size:14px; color:#9C927F">{{ copy.footer }}</footer>
 </div>
 
 <template id="__bundler_thumbnail">
@@ -169,76 +182,250 @@
 </template>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;showMomSection&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}}">
-const DATA = [
-  { key:'travel', title:'Travel & Transport', subtitle:'Out and about', hue:140, items:[
-    { id:'stroller', name:'Stroller (3-in-1 convertible)', qty:'1', note:'Car seat included — Manel is treating herself to this one', reserved:true, links:[{label:'Joie Versatrax — Smyths', url:'https://www.smythstoys.com/de/de-de/baby/kinderwagen/kombikinderwagen-und-kinderwagen-3-in-1/joie-versatrax-e-trio-kinderwagen-3-in-1-pebble-grau/p/242916'}] },
-    { id:'diaperbag', name:'Diaper bag', qty:'1', links:[{label:'Olend Big Ona', url:'https://www.olend.net/products/big-ona-soft-bag?srsltid=AfmBOop8j6sNiRSV13sJ5UJfRSIIBUQ5_XmMuxopK37r01S5PaI85f4m&variant=48389832081743'}] },
-    { id:'carrier', name:'Baby carrier or wrap', qty:'1', links:[{label:'Flybaby carrier', url:'https://flybaby.berlin/en/products/flybaby-carrier?variant=51668678410580#muun-shade-selector'}] },
+const LANGUAGE_STORAGE_KEY = 'baby-registry-language';
+
+function detectInitialLanguage() {
+  try {
+    const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (saved === 'en' || saved === 'fr') return saved;
+  } catch (error) {
+    console.warn('Could not read the saved language preference.', error);
+  }
+  const browserLanguage = (navigator.languages?.[0] || navigator.language || '').toLowerCase();
+  return browserLanguage.startsWith('fr') ? 'fr' : 'en';
+}
+
+const CATALOG = [
+  { key:'travel', hue:140, items:[
+    { id:'stroller', qty:'1', reserved:true, links:[{label:'Joie Versatrax — Smyths', url:'https://www.smythstoys.com/de/de-de/baby/kinderwagen/kombikinderwagen-und-kinderwagen-3-in-1/joie-versatrax-e-trio-kinderwagen-3-in-1-pebble-grau/p/242916'}] },
+    { id:'diaperbag', qty:'1', links:[{label:'Olend Big Ona', url:'https://www.olend.net/products/big-ona-soft-bag?srsltid=AfmBOop8j6sNiRSV13sJ5UJfRSIIBUQ5_XmMuxopK37r01S5PaI85f4m&variant=48389832081743'}] },
+    { id:'carrier', qty:'1', links:[{label:'Flybaby carrier', url:'https://flybaby.berlin/en/products/flybaby-carrier?variant=51668678410580#muun-shade-selector'}] },
   ]},
-  { key:'sleep', title:'Sleep', subtitle:'Sweet dreams', hue:240, items:[
-    { id:'crib', name:'Bedside crib / bassinet', qty:'1', note:'Mattress included', links:[{label:'Chicco Next2Me — Babymarkt', url:'https://www.babymarkt.com/de/p/chicco-beistellbett-next2me-magic-evo-desert-taupe-7843216/'}] },
-    { id:'sack-tog3', name:'Sleep sack — velour, TOG 3', qty:'1', note:'For colder months', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-velours-imprime-baleine-tog-3-co2-adriatic/A0E2N01.html#start=1'}] },
-    { id:'sack-tog2', name:'Sleep sack — cotton, TOG 2', qty:'1', note:'For milder nights', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-coton-tog-2-marshmallow-smoking/A0EX401.html#start=1'}] },
-    { id:'sack-nb', name:'Sleep sack — newborn size', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0cFuPHQP'}] },
-    { id:'sheets-1', name:'Fitted sheets — set 1', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0b7S9Pg6'}] },
-    { id:'sheets-2', name:'Fitted sheets — set 2', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0gf24rIN'}] },
-    { id:'monitor', name:'Baby monitor', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0b2cpVPh'}] },
-    { id:'nightlight', name:'Nightlight', qty:'1', links:[{label:'Paddy Panda — Mega-Light', url:'https://www.mega-light.de/megalight-led-kinder-nachtlicht-paddy-panda-dimmbar-mit-timer.html'}] },
-    { id:'nest', name:'Baby nest / lounger', qty:'1', links:[{label:'Zöllner Nido Dinos — BabyOne', url:'https://www.babyone.de/kuschelnest/zoellner/kuschelnest-nido-dinos/2000583474906.html'}] },
-    { id:'towel', name:'Baby towels', qty:'2', links:[{label:'Gloop organic cotton', url:'https://gloopbaby.com/produto/colecoes-bebe/little-garden/toalha-de-banho-para-bebe-em-algodao-organico-little-garden/'}] },
+  { key:'sleep', hue:240, items:[
+    { id:'crib', qty:'1', links:[{label:'Chicco Next2Me — Babymarkt', url:'https://www.babymarkt.com/de/p/chicco-beistellbett-next2me-magic-evo-desert-taupe-7843216/'}] },
+    { id:'sack-tog3', qty:'1', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-velours-imprime-baleine-tog-3-co2-adriatic/A0E2N01.html#start=1'}] },
+    { id:'sack-tog2', qty:'1', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-coton-tog-2-marshmallow-smoking/A0EX401.html#start=1'}] },
+    { id:'sack-nb', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0cFuPHQP'}] },
+    { id:'sheets-1', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0b7S9Pg6'}] },
+    { id:'sheets-2', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0gf24rIN'}] },
+    { id:'monitor', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0b2cpVPh'}] },
+    { id:'nightlight', qty:'1', links:[{label:'Paddy Panda — Mega-Light', url:'https://www.mega-light.de/megalight-led-kinder-nachtlicht-paddy-panda-dimmbar-mit-timer.html'}] },
+    { id:'nest', qty:'1', links:[{label:'Zöllner Nido Dinos — BabyOne', url:'https://www.babyone.de/kuschelnest/zoellner/kuschelnest-nido-dinos/2000583474906.html'}] },
+    { id:'towel', qty:'2', links:[{label:'Gloop organic cotton', url:'https://gloopbaby.com/produto/colecoes-bebe/little-garden/toalha-de-banho-para-bebe-em-algodao-organico-little-garden/'}] },
   ]},
-  { key:'hygiene', title:'Hygiene & Health', subtitle:'New items only, please', hue:90, items:[
-    { id:'bathtub', name:'Baby bathtub', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/041VRhHK'}] },
-    { id:'baththermo', name:'Bath thermometer', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/057qMM10'}] },
-    { id:'thermo-kit', name:'Body thermometer & grooming kit', qty:'1', note:'Nail clippers, brush', links:[{label:'Amazon', url:'https://amzn.eu/d/04PZh5K4'}] },
-    { id:'diapers', name:'Newborn diapers (size 1)', qty:'1–2 packs', note:"Don't stock up too much at first", links:[{label:'Amazon', url:'https://amzn.eu/d/0hshBp7W'}] },
-    { id:'wipes', name:'Wet wipes for baby', qty:'1 pack', links:[{label:'Amazon', url:'https://amzn.eu/d/02xSkuME'}] },
-    { id:'liniment', name:'Cotton pads & liniment', qty:'1 set', links:[] },
+  { key:'hygiene', hue:90, items:[
+    { id:'bathtub', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/041VRhHK'}] },
+    { id:'baththermo', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/057qMM10'}] },
+    { id:'thermo-kit', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/04PZh5K4'}] },
+    { id:'diapers', qty:'1–2 packs', links:[{label:'Amazon', url:'https://amzn.eu/d/0hshBp7W'}] },
+    { id:'wipes', qty:'1 pack', links:[{label:'Amazon', url:'https://amzn.eu/d/02xSkuME'}] },
+    { id:'liniment', qty:'1 set', links:[] },
   ]},
-  { key:'feeding', title:'Feeding', subtitle:'Mealtime', hue:55, items:[
-    { id:'bottles', name:'Baby bottles (small & large)', qty:'4–6', note:'Useful even if breastfeeding', links:[{label:'Philips Natural gift set', url:'https://www.philips.co.uk/c-p/SCD837_11/natural-response-baby-gift-set'}] },
-    { id:'brush', name:'Bottle brush', qty:'1', links:[] },
-    { id:'bibs', name:'Bibs', qty:'10+', note:'You can never have too many', links:[{label:'Amazon', url:'https://amzn.eu/d/04mq0ggZ'}] },
-    { id:'pillow', name:'Nursing pillow', qty:'1', note:"Also great for mom's comfort", links:[{label:'Amazon', url:'https://amzn.eu/d/0dH4dms2'}] },
-    { id:'muslins', name:'Cotton muslins', qty:'5–6', note:'Multi-purpose', links:[{label:'Amazon', url:'https://amzn.eu/d/06nGikGW'}] },
+  { key:'feeding', hue:55, items:[
+    { id:'bottles', qty:'4–6', links:[{label:'Philips Natural gift set', url:'https://www.philips.co.uk/c-p/SCD837_11/natural-response-baby-gift-set'}] },
+    { id:'brush', qty:'1', links:[] },
+    { id:'bibs', qty:'10+', links:[{label:'Amazon', url:'https://amzn.eu/d/04mq0ggZ'}] },
+    { id:'pillow', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0dH4dms2'}] },
+    { id:'muslins', qty:'5–6', links:[{label:'Amazon', url:'https://amzn.eu/d/06nGikGW'}] },
   ]},
-  { key:'extra', title:'Additional baby things', subtitle:'Nice to have', hue:140, intro:'Please pick from here only once the essentials above are covered.', items:[
-    { id:'gym', name:'Activity gym with arches', qty:'1', links:[{label:'Lovevery Play Gym', url:'https://lovevery.eu/products/the-play-gym'}] },
-    { id:'bouncer', name:'Comfortable bouncer', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0dwva62E'}] },
-    { id:'rattles', name:'Rattles & teething toys', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/08nvqJVO'}] },
-    { id:'musical', name:'Musical toys', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/041xALFK'}] },
-    { id:'bodies', name:'Long-sleeve bodysuits', qty:'1 set', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/body/lot-de-bodies-manches-longues-en-coton-uni-bebe-variante-1/A0H0000.html'}] },
-    { id:'doudou', name:'Doudou (security blanket)', qty:'1', links:[{label:'Moonie Bunny', url:'https://moonie.eu/en_GB/p/DOUDOU-BUNNY/175'}] },
-    { id:'silibibs', name:'Silicone bibs', qty:'1–2', links:[{label:'Gloop', url:'https://gloopbaby.com/produto/hora-da-refeicao/babete-silicone/babete-em-silicone-burlywood/'}] },
+  { key:'extra', hue:140, items:[
+    { id:'gym', qty:'1', links:[{label:'Lovevery Play Gym', url:'https://lovevery.eu/products/the-play-gym'}] },
+    { id:'bouncer', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0dwva62E'}] },
+    { id:'rattles', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/08nvqJVO'}] },
+    { id:'musical', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/041xALFK'}] },
+    { id:'bodies', qty:'1 set', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/body/lot-de-bodies-manches-longues-en-coton-uni-bebe-variante-1/A0H0000.html'}] },
+    { id:'doudou', qty:'1', links:[{label:'Moonie Bunny', url:'https://moonie.eu/en_GB/p/DOUDOU-BUNNY/175'}] },
+    { id:'silibibs', qty:'1–2', links:[{label:'Gloop', url:'https://gloopbaby.com/produto/hora-da-refeicao/babete-silicone/babete-em-silicone-burlywood/'}] },
   ]},
 ];
 
-const MOM = [
-  { id:'m-pads', cat:'Protection', name:'Maternity pads', note:'"Night" or extra-long models', url:'https://amzn.eu/d/00tNsqyi' },
-  { id:'m-liners', cat:'Protection', name:'Panty liners', note:'For the end of lochia', url:'https://amzn.eu/d/04pNjzTh' },
-  { id:'m-panties', cat:'Underwear', name:'Cotton or disposable panties', note:'One size up for comfort', url:'' },
-  { id:'m-foam', cat:'Local care', name:'Soothing foam', note:'Witch hazel type', url:'' },
-  { id:'m-compress', cat:'Local care', name:'Compresses', note:'Sterile or cold compresses', url:'' },
-  { id:'m-nursingpads', cat:'Comfort', name:'Nursing pads', note:'Prevents leaks when breastfeeding', url:'https://amzn.eu/d/0fQGcwC8' },
-  { id:'m-cream', cat:'Comfort', name:'Nipple cream', note:'Lanolin care if necessary', url:'https://amzn.eu/d/0hFZqZGe' },
+const MOM_CATALOG = [
+  { id:'m-pads', url:'https://amzn.eu/d/00tNsqyi' },
+  { id:'m-liners', url:'https://amzn.eu/d/04pNjzTh' },
+  { id:'m-panties', url:'' },
+  { id:'m-foam', url:'' },
+  { id:'m-compress', url:'' },
+  { id:'m-nursingpads', url:'https://amzn.eu/d/0fQGcwC8' },
+  { id:'m-cream', url:'https://amzn.eu/d/0hFZqZGe' },
 ];
+
+const I18N = {
+  en: {
+    pageTitle: "Joseph's Baby Registry",
+    languageSwitcher: 'Language',
+    switchToEnglish: 'Show in English',
+    switchToFrench: 'Show in French',
+    imagePlaceholder: "Joseph's illustration",
+    eyebrow: 'Baby registry',
+    heroTitle: 'Waiting for Joseph',
+    expected: 'Expected October 8, 2026 · Manel, waiting impatiently',
+    heroNote: 'A little note from Manel — thank you for helping me welcome Joseph. If you would like to gift something, pick an item below and tap “I’ll get this” so no one doubles up. With love.',
+    preLovedTitle: 'Pre-loved is very welcome!',
+    preLovedBody: 'Reused and second-hand items are more than welcome for everything — except the Hygiene & Health list, where I would prefer new.',
+    reservedLabel: 'Manel is getting this one',
+    momTitle: 'For Manel — postpartum care',
+    momSubtitle: 'only once everything for Joseph is covered',
+    viewItem: 'View item',
+    deliveryTitle: 'Delivery address',
+    deliveryNote: "Where to send gifts if you are ordering online and will not be able to join me for the baby shower in mid-September",
+    footer: "Thank you for being part of Joseph's welcome party.",
+    claimedSummary: (claimed, total) => `${claimed} of ${total} ${claimed === 1 ? 'item' : 'items'} claimed`,
+    buttons: {
+      saving: 'Saving…', connecting: 'Connecting…', unavailable: 'Claims unavailable',
+      undo: 'Undo my claim', claimed: '✓ Claimed', claim: "I'll get this",
+    },
+    messages: {
+      connecting: 'Connecting secure claims…',
+      unavailableLong: 'Claims are temporarily unavailable. Please try again later.',
+      alreadyClaimed: 'This gift has already been claimed.',
+      conflict: 'Someone just claimed this gift. Please choose another one.',
+      unavailableShort: 'Claims are temporarily unavailable. Please try again.',
+    },
+    sections: {
+      travel: { title:'Travel & Transport', subtitle:'Out and about' },
+      sleep: { title:'Sleep', subtitle:'Sweet dreams' },
+      hygiene: { title:'Hygiene & Health', subtitle:'New items only, please' },
+      feeding: { title:'Feeding', subtitle:'Mealtime' },
+      extra: { title:'Additional baby things', subtitle:'Nice to have', intro:'Please pick from here only once the essentials above are covered.' },
+    },
+    items: {
+      stroller: { name:'Stroller (3-in-1 convertible)', note:'Car seat included — Manel is treating herself to this one' },
+      diaperbag: { name:'Diaper bag' }, carrier: { name:'Baby carrier or wrap' },
+      crib: { name:'Bedside crib / bassinet', note:'Mattress included' },
+      'sack-tog3': { name:'Sleep sack — velour, TOG 3', note:'For colder months' },
+      'sack-tog2': { name:'Sleep sack — cotton, TOG 2', note:'For milder nights' },
+      'sack-nb': { name:'Sleep sack — newborn size' },
+      'sheets-1': { name:'Fitted sheets — set 1' }, 'sheets-2': { name:'Fitted sheets — set 2' },
+      monitor: { name:'Baby monitor' }, nightlight: { name:'Nightlight' },
+      nest: { name:'Baby nest / lounger' }, towel: { name:'Baby towels' },
+      bathtub: { name:'Baby bathtub' }, baththermo: { name:'Bath thermometer' },
+      'thermo-kit': { name:'Body thermometer & grooming kit', note:'Nail clippers, brush' },
+      diapers: { name:'Newborn diapers (size 1)', note:"Don't stock up too much at first" },
+      wipes: { name:'Wet wipes for baby' }, liniment: { name:'Cotton pads & liniment' },
+      bottles: { name:'Baby bottles (small & large)', note:'Useful even if breastfeeding' },
+      brush: { name:'Bottle brush' }, bibs: { name:'Bibs', note:'You can never have too many' },
+      pillow: { name:'Nursing pillow', note:"Also great for mom's comfort" },
+      muslins: { name:'Cotton muslins', note:'Multi-purpose' },
+      gym: { name:'Activity gym with arches' }, bouncer: { name:'Comfortable bouncer' },
+      rattles: { name:'Rattles & teething toys' }, musical: { name:'Musical toys' },
+      bodies: { name:'Long-sleeve bodysuits' }, doudou: { name:'Doudou (security blanket)' },
+      silibibs: { name:'Silicone bibs' },
+    },
+    momItems: {
+      'm-pads': { cat:'Protection', name:'Maternity pads', note:'“Night” or extra-long models' },
+      'm-liners': { cat:'Protection', name:'Panty liners', note:'For the end of lochia' },
+      'm-panties': { cat:'Underwear', name:'Cotton or disposable panties', note:'One size up for comfort' },
+      'm-foam': { cat:'Local care', name:'Soothing foam', note:'Witch hazel type' },
+      'm-compress': { cat:'Local care', name:'Compresses', note:'Sterile or cold compresses' },
+      'm-nursingpads': { cat:'Comfort', name:'Nursing pads', note:'Prevents leaks when breastfeeding' },
+      'm-cream': { cat:'Comfort', name:'Nipple cream', note:'Lanolin care if necessary' },
+    },
+  },
+  fr: {
+    pageTitle: 'Liste de naissance de Joseph',
+    languageSwitcher: 'Langue',
+    switchToEnglish: 'Afficher en anglais',
+    switchToFrench: 'Afficher en français',
+    imagePlaceholder: 'Illustration de Joseph',
+    eyebrow: 'Liste de naissance',
+    heroTitle: 'En attendant Joseph',
+    expected: 'Prévu pour le 8 octobre 2026 · Manel l’attend avec impatience',
+    heroNote: 'Un petit mot de Manel — merci de m’aider à accueillir Joseph. Si vous souhaitez offrir quelque chose, choisissez un article ci-dessous et cliquez sur « Je m’en occupe » afin d’éviter les doublons. Avec amour.',
+    preLovedTitle: 'Les articles de seconde main sont les bienvenus !',
+    preLovedBody: 'Les objets réutilisés et d’occasion sont les bienvenus pour toute la liste — sauf pour la rubrique Hygiène et santé, où je préfère des articles neufs.',
+    reservedLabel: 'Manel s’occupe de celui-ci',
+    momTitle: 'Pour Manel — soins post-partum',
+    momSubtitle: 'uniquement lorsque tout le nécessaire pour Joseph est couvert',
+    viewItem: 'Voir l’article',
+    deliveryTitle: 'Adresse de livraison',
+    deliveryNote: 'Où envoyer les cadeaux si vous commandez en ligne et ne pourrez pas me rejoindre pour la baby shower à la mi-septembre',
+    footer: 'Merci de participer à la fête de bienvenue de Joseph.',
+    claimedSummary: (claimed, total) => `${claimed} ${claimed === 1 ? 'article réservé' : 'articles réservés'} sur ${total}`,
+    buttons: {
+      saving: 'Enregistrement…', connecting: 'Connexion…', unavailable: 'Réservations indisponibles',
+      undo: 'Annuler ma réservation', claimed: '✓ Réservé', claim: 'Je m’en occupe',
+    },
+    messages: {
+      connecting: 'Connexion aux réservations sécurisées…',
+      unavailableLong: 'Les réservations sont temporairement indisponibles. Veuillez réessayer plus tard.',
+      alreadyClaimed: 'Ce cadeau a déjà été réservé.',
+      conflict: 'Quelqu’un vient de réserver ce cadeau. Veuillez en choisir un autre.',
+      unavailableShort: 'Les réservations sont temporairement indisponibles. Veuillez réessayer.',
+    },
+    sections: {
+      travel: { title:'Déplacements et transport', subtitle:'Pour les sorties' },
+      sleep: { title:'Sommeil', subtitle:'Faites de beaux rêves' },
+      hygiene: { title:'Hygiène et santé', subtitle:'Articles neufs uniquement, s’il vous plaît' },
+      feeding: { title:'Repas', subtitle:'À table' },
+      extra: { title:'Autres essentiels pour bébé', subtitle:'Les petits plus', intro:'Merci de choisir dans cette rubrique uniquement lorsque les essentiels ci-dessus sont couverts.' },
+    },
+    items: {
+      stroller: { name:'Poussette combinée (3-en-1)', note:'Siège-auto inclus — Manel s’offre celle-ci' },
+      diaperbag: { name:'Sac à langer' }, carrier: { name:'Porte-bébé ou écharpe de portage' },
+      crib: { name:'Berceau cododo', note:'Matelas inclus' },
+      'sack-tog3': { name:'Gigoteuse — velours, TOG 3', note:'Pour les mois les plus froids' },
+      'sack-tog2': { name:'Gigoteuse — coton, TOG 2', note:'Pour les nuits plus douces' },
+      'sack-nb': { name:'Gigoteuse — taille naissance' },
+      'sheets-1': { name:'Draps-housses — lot 1' }, 'sheets-2': { name:'Draps-housses — lot 2' },
+      monitor: { name:'Babyphone' }, nightlight: { name:'Veilleuse' },
+      nest: { name:'Nid / cocon pour bébé' }, towel: { name:'Serviettes de bain pour bébé' },
+      bathtub: { name:'Baignoire pour bébé' }, baththermo: { name:'Thermomètre de bain' },
+      'thermo-kit': { name:'Thermomètre corporel et kit de toilette', note:'Coupe-ongles, brosse' },
+      diapers: { name:'Couches pour nouveau-né (taille 1)', note:'Inutile d’en stocker trop au début' },
+      wipes: { name:'Lingettes pour bébé' }, liniment: { name:'Cotons et liniment' },
+      bottles: { name:'Biberons (petits et grands)', note:'Utiles même en cas d’allaitement' },
+      brush: { name:'Goupillon pour biberons' }, bibs: { name:'Bavoirs', note:'On n’en a jamais trop' },
+      pillow: { name:'Coussin d’allaitement', note:'Également très confortable pour Manel' },
+      muslins: { name:'Langes en coton', note:'Polyvalents' },
+      gym: { name:'Tapis d’éveil avec arches' }, bouncer: { name:'Transat confortable' },
+      rattles: { name:'Hochets et jouets de dentition' }, musical: { name:'Jouets musicaux' },
+      bodies: { name:'Bodies à manches longues' }, doudou: { name:'Doudou' },
+      silibibs: { name:'Bavoirs en silicone' },
+    },
+    momItems: {
+      'm-pads': { cat:'Protection', name:'Serviettes hygiéniques post-partum', note:'Modèles « nuit » ou extra-longs' },
+      'm-liners': { cat:'Protection', name:'Protège-slips', note:'Pour la fin des lochies' },
+      'm-panties': { cat:'Sous-vêtements', name:'Culottes en coton ou jetables', note:'Une taille au-dessus pour plus de confort' },
+      'm-foam': { cat:'Soins locaux', name:'Mousse apaisante', note:'À l’hamamélis' },
+      'm-compress': { cat:'Soins locaux', name:'Compresses', note:'Stériles ou froides' },
+      'm-nursingpads': { cat:'Confort', name:'Coussinets d’allaitement', note:'Pour éviter les fuites pendant l’allaitement' },
+      'm-cream': { cat:'Confort', name:'Crème pour mamelons', note:'Soin à la lanoline si nécessaire' },
+    },
+  },
+};
 
 class Component extends DCLogic {
   state = {
+    language: detectInitialLanguage(),
     claims: {},
     pending: {},
     claimService: 'connecting',
-    claimMessage: 'Connecting secure claims…',
+    claimMessageKey: 'connecting',
     uid: ''
   };
   componentDidMount() {
+    this._applyDocumentLanguage(this.state.language);
     if (window.__registryDB) { this._connectDB(); return; }
     if (window.__registryStatus?.state === 'error') { this._setUnavailable(); return; }
     window.addEventListener('registry-db-ready', () => this._connectDB(), { once: true });
     window.addEventListener('registry-db-error', () => this._setUnavailable(), { once: true });
   }
-  _setUnavailable(message = 'Claims are temporarily unavailable. Please try again later.') {
-    this.setState({ claimService: 'error', claimMessage: message });
+  _applyDocumentLanguage(language) {
+    const safeLanguage = language === 'fr' ? 'fr' : 'en';
+    document.documentElement.lang = safeLanguage;
+    document.title = I18N[safeLanguage].pageTitle;
+  }
+  setLanguage(language) {
+    if (language !== 'en' && language !== 'fr') return;
+    try {
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    } catch (error) {
+      console.warn('Could not save the language preference.', error);
+    }
+    this.setState({ language }, () => this._applyDocumentLanguage(language));
+  }
+  _setUnavailable(messageKey = 'unavailableLong') {
+    this.setState({ claimService: 'error', claimMessageKey: messageKey });
   }
   _connectDB() {
     if (this._usingDB) return;
@@ -248,7 +435,7 @@ class Component extends DCLogic {
       snap => {
         const claims = {};
         snap.forEach(doc => { claims[doc.id] = doc.data(); });
-        this.setState({ claims, uid: R.uid, claimService: 'ready', claimMessage: '' });
+        this.setState({ claims, uid: R.uid, claimService: 'ready', claimMessageKey: '' });
       },
       err => {
         console.warn('registry snapshot error', err);
@@ -262,10 +449,10 @@ class Component extends DCLogic {
     if (this.state.claimService !== 'ready' || this.state.pending[id]) return;
     const existing = this.state.claims[id];
     if (existing && existing.ownerUid !== this.state.uid) {
-      this.setState({ claimMessage: 'This gift has already been claimed.' });
+      this.setState({ claimMessageKey: 'alreadyClaimed' });
       return;
     }
-    this.setState(st => ({ pending: { ...st.pending, [id]: true }, claimMessage: '' }));
+    this.setState(st => ({ pending: { ...st.pending, [id]: true }, claimMessageKey: '' }));
     try {
       if (existing) {
         await window.__registryDB.release(id);
@@ -282,15 +469,15 @@ class Component extends DCLogic {
       console.warn('claim write failed', error);
       const conflict = !existing && (error?.code === 'permission-denied' || error?.code === 'already-exists');
       this.setState({
-        claimMessage: conflict
-          ? 'Someone just claimed this gift. Please choose another one.'
-          : 'Claims are temporarily unavailable. Please try again.'
+        claimMessageKey: conflict ? 'conflict' : 'unavailableShort'
       });
     } finally {
       this.setState(st => ({ pending: { ...st.pending, [id]: false } }));
     }
   }
   renderVals() {
+    const language = this.state.language === 'fr' ? 'fr' : 'en';
+    const copy = I18N[language];
     const claims = this.state.claims;
     const ready = this.state.claimService === 'ready';
     let total = 0, claimed = 0;
@@ -303,9 +490,9 @@ class Component extends DCLogic {
       const disabled = !ready || pending || (isClaimed && !isMine);
       return {
         isClaimed,
-        btnLabel: pending ? 'Saving…' : !ready
-          ? (this.state.claimService === 'connecting' ? 'Connecting…' : 'Claims unavailable')
-          : isMine ? 'Undo my claim' : isClaimed ? '✓ Claimed' : "I'll get this",
+        btnLabel: pending ? copy.buttons.saving : !ready
+          ? (this.state.claimService === 'connecting' ? copy.buttons.connecting : copy.buttons.unavailable)
+          : isMine ? copy.buttons.undo : isClaimed ? copy.buttons.claimed : copy.buttons.claim,
         btnBg: isClaimed ? color : '#FFFFFF',
         btnColor: isClaimed ? '#4A4436' : '#5C5546',
         btnBorder: isClaimed ? '1px solid transparent' : '1px solid #DDD2BC',
@@ -314,9 +501,13 @@ class Component extends DCLogic {
         toggle: () => this.toggle(id),
       };
     };
-    const sections = DATA.map(sec => ({
-      title: sec.title, subtitle: sec.subtitle, intro: sec.intro || '', color: colorFor(sec.hue),
-      items: sec.items.map(it => {
+    const sections = CATALOG.map(sec => {
+      const sectionCopy = copy.sections[sec.key];
+      return {
+      title: sectionCopy.title, subtitle: sectionCopy.subtitle, intro: sectionCopy.intro || '', color: colorFor(sec.hue),
+      items: sec.items.map(item => {
+        const itemCopy = copy.items[item.id];
+        const it = { ...item, ...itemCopy };
         const button = buttonState(it.id, colorFor(sec.hue));
         const c = button.isClaimed;
         if (!it.reserved) { total++; if (c) claimed++; }
@@ -329,8 +520,9 @@ class Component extends DCLogic {
           ...button,
         };
       }),
-    }));
-    const momItems = MOM.map(m => {
+    };});
+    const momItems = MOM_CATALOG.map(item => {
+      const m = { ...item, ...copy.momItems[item.id] };
       const button = buttonState(m.id, '#EFE7D8');
       const c = button.isClaimed;
       total++; if (c) claimed++;
@@ -342,12 +534,24 @@ class Component extends DCLogic {
       };
     });
     return {
+      copy,
       sections, momItems,
       totalCount: total, claimedCount: claimed,
-      claimMessage: this.state.claimMessage,
+      claimedSummary: copy.claimedSummary(claimed, total),
+      claimMessage: this.state.claimMessageKey ? copy.messages[this.state.claimMessageKey] : '',
       claimNoticeBg: this.state.claimService === 'error' ? '#FFF1EC' : '#F1F0E2',
       claimNoticeBorder: this.state.claimService === 'error' ? '#E8B5A5' : '#DDD9C0',
       claimNoticeColor: this.state.claimService === 'error' ? '#7A3E2E' : '#5C6046',
+      chooseEnglish: () => this.setLanguage('en'),
+      chooseFrench: () => this.setLanguage('fr'),
+      englishSelected: language === 'en',
+      frenchSelected: language === 'fr',
+      englishToggleBg: language === 'en' ? '#FFFFFF' : 'transparent',
+      frenchToggleBg: language === 'fr' ? '#FFFFFF' : 'transparent',
+      englishToggleColor: language === 'en' ? '#5C5546' : '#918674',
+      frenchToggleColor: language === 'fr' ? '#5C5546' : '#918674',
+      englishToggleShadow: language === 'en' ? '0 1px 4px rgba(90,80,60,0.15)' : 'none',
+      frenchToggleShadow: language === 'fr' ? '0 1px 4px rgba(90,80,60,0.15)' : 'none',
       showMom: this.props.showMomSection ?? true,
     };
   }
