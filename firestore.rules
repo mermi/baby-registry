@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validGiftId(itemId) {
+      return itemId in [
+        'diaperbag', 'carrier',
+        'crib', 'sack-tog3', 'sack-tog2', 'sack-nb', 'sheets-1', 'sheets-2',
+        'monitor', 'nightlight', 'nest', 'towel',
+        'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'wipes', 'liniment',
+        'bottles', 'brush', 'bibs', 'pillow', 'muslins',
+        'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs',
+        'm-pads', 'm-liners', 'm-panties', 'm-foam', 'm-compress',
+        'm-nursingpads', 'm-cream'
+      ];
+    }
+
+    match /registries/joseph/claims/{itemId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && validGiftId(itemId)
+        && request.resource.data.keys().hasAll(['ownerUid', 'claimedAt'])
+        && request.resource.data.keys().hasOnly(['ownerUid', 'claimedAt'])
+        && request.resource.data.ownerUid is string
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.claimedAt == request.time;
+
+      allow update: if false;
+
+      allow delete: if signedIn()
+        && resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}

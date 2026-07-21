@@ -1,0 +1,25 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "auth": {
+    "providers": {
+      "anonymous": true
+    }
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "firestore.rules",
+      "README.md",
+      ".gitignore",
+      ".git/**",
+      ".firebase/**",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "trailingSlash": false
+  }
+}

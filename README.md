@@ -11,8 +11,8 @@ Friends and family can browse gift ideas, follow helpful shopping links, and mar
 - Lets visitors claim and unclaim available gifts
 - Shows live progress for how many items have been claimed
 - Includes a separate postpartum-care section for Manel 🌸
-- Works without a backend by saving claims in the visitor's browser
-- Can optionally sync claims for everyone through Firebase Firestore
+- Synchronizes claims for everyone through Firebase Firestore
+- Uses anonymous sign-in so only the original visitor can undo their claim
 - Looks great on both phones and larger screens 📱🖥️
 
 ## 🗂️ Project structure
@@ -22,7 +22,9 @@ Friends and family can browse gift ideas, follow helpful shopping links, and mar
 ├── index.html       # Registry content, styling, and claiming logic
 ├── support.js      # Runtime support used by the page
 ├── image-slot.js   # Image-slot web component
-└── assets/         # Joseph's illustration and other images
+├── assets/         # Joseph's illustration and other images
+├── firestore.rules # Server-enforced claim permissions
+└── firebase.json   # Firebase auth, rules, and hosting config
 ```
 
 There is no build step and no package installation required — it is a small, static website. 🎉
@@ -46,13 +48,23 @@ Serve the repository root with any static hosting provider, such as GitHub Pages
 - `image-slot.js`
 - `assets/`
 
-## 🔥 Optional shared claiming with Firebase
+## 🔥 Secure shared claiming with Firebase
 
-By default, claimed gifts are stored in each visitor's browser using `localStorage`. That is handy for previews, but claims will not be shared between different people or devices.
+Claims are stored as individual documents in Firebase Firestore. Visitors sign in anonymously, so there is no login screen and no personal information is collected. Firestore Security Rules ensure that only the browser that made a claim can undo it.
 
-To synchronize claims for everyone, create a Firebase project with Firestore and add its web configuration to `window.REGISTRY_FIREBASE_CONFIG` near the top of `index.html`. When no valid Firebase project is configured, the registry automatically falls back to browser-only storage.
+To configure a new environment:
 
-> 💡 Remember to configure appropriate Firestore security rules before making the registry public.
+This repository is connected to the `joseph-baby-registry` Firebase project. For a different environment:
+
+1. Create a Firebase project and web app.
+2. Enable **Anonymous** under Authentication → Sign-in method.
+3. Create a Firestore database in production mode.
+4. Add the deployed website domain under Authentication → Settings → Authorized domains.
+5. Paste the Firebase web configuration into `window.REGISTRY_FIREBASE_CONFIG` in `index.html`.
+6. Update the project alias in `.firebaserc`.
+7. Deploy authentication, rules, and the website with `npx firebase-tools deploy --only auth,firestore:rules,hosting`.
+
+If Firebase cannot connect, claiming is disabled instead of saving a misleading browser-only claim.
 
 ## 🧸 Making changes
 

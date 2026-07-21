@@ -22,36 +22,54 @@
 </style>
 <script src="./image-slot.js"></script>
 <script>
-  /* SHARED CLAIMING (Firebase) - OPTIONAL.
-     Paste your own Firebase web config below to sync claims live
-     across everyone. Leave it blank and the page still works,
-     saving claims in each visitor's own browser. */
+  /* Shared claiming uses Firebase Anonymous Authentication and Firestore.
+     This public web config identifies the Firebase project; access is
+     enforced by firestore.rules. Never add Admin SDK credentials here. */
   window.REGISTRY_FIREBASE_CONFIG = {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyBjvwssAzBK8hT5WhlZDriElhahNN9At7s",
+    authDomain: "joseph-baby-registry.firebaseapp.com",
+    projectId: "joseph-baby-registry",
+    storageBucket: "joseph-baby-registry.firebasestorage.app",
+    messagingSenderId: "272079611416",
+    appId: "1:272079611416:web:3ae13822718dd1e57ec56d"
   };
   (function () {
+    if (window.__registry_firebase_starting) return;
+    window.__registry_firebase_starting = true;
     var cfg = window.REGISTRY_FIREBASE_CONFIG;
-    if (!cfg || !cfg.projectId) return;
+    function unavailable(error) {
+      console.warn("Secure claiming is unavailable.", error || "Firebase is not configured.");
+      window.__registryStatus = { state: "error" };
+      window.dispatchEvent(new Event("registry-db-error"));
+    }
+    if (!cfg || !cfg.projectId) { unavailable(); return; }
     Promise.all([
-      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")
-    ]).then(function (mods) {
-      var appMod = mods[0], fs = mods[1];
-      var db = fs.getFirestore(appMod.initializeApp(cfg));
+      import("https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"),
+      import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js")
+    ]).then(async function (mods) {
+      var app_mod = mods[0], auth_mod = mods[1], fs = mods[2];
+      var app = app_mod.initializeApp(cfg);
+      var auth = auth_mod.getAuth(app);
+      await auth_mod.setPersistence(auth, auth_mod.browserLocalPersistence);
+      await auth.authStateReady();
+      var user = auth.currentUser || (await auth_mod.signInAnonymously(auth)).user;
+      var db = fs.getFirestore(app);
+      var claims_ref = fs.collection(db, "registries", "joseph", "claims");
       window.__registryDB = {
-        onSnapshot: fs.onSnapshot,
-        setDoc: fs.setDoc,
-        ref: fs.doc(db, "registries", "joseph")
+        uid: user.uid,
+        subscribe: function (next, error) { return fs.onSnapshot(claims_ref, next, error); },
+        claim: function (id) {
+          return fs.setDoc(fs.doc(claims_ref, id), {
+            ownerUid: user.uid,
+            claimedAt: fs.serverTimestamp()
+          });
+        },
+        release: function (id) { return fs.deleteDoc(fs.doc(claims_ref, id)); }
       };
+      window.__registryStatus = { state: "ready" };
       window.dispatchEvent(new Event("registry-db-ready"));
-    }).catch(function (e) {
-      console.warn("Firebase init failed - falling back to local claims.", e);
-    });
+    }).catch(unavailable);
   })();
 </script>
 </helmet>
@@ -68,6 +86,9 @@
     <p style="margin:10px 0 0; max-width:520px; font-size:17px; line-height:1.6; color:#5C5546; text-wrap:pretty">A little note from Manel — thank you for helping us welcome Joseph. If you'd like to gift something, pick an item below and tap <em>"I'll get this"</em> so no one doubles up. With love.</p>
     <div style="max-width:560px; background:#F1F0E2; border:1px solid #DDD9C0; border-radius:12px; padding:12px 20px; font-size:15px; line-height:1.5; color:#5C6046"><strong>Pre-loved is very welcome!</strong> Reused and second-hand items are more than welcome for everything — except the Hygiene &amp; Health list, where we'd prefer new.</div>
     <div style="margin-top:4px; font-size:14px; color:#9C927F">{{ claimedCount }} of {{ totalCount }} items claimed</div>
+    <sc-if value="{{ claimMessage }}" hint-placeholder-val="{{ true }}">
+      <div role="status" aria-live="polite" style="max-width:560px; border:1px solid {{ claimNoticeBorder }}; background:{{ claimNoticeBg }}; border-radius:10px; padding:9px 14px; font-size:14px; color:{{ claimNoticeColor }}">{{ claimMessage }}</div>
+    </sc-if>
   </header>
 
   <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="5">
@@ -105,7 +126,7 @@
               <span style="flex-shrink:0; font-size:13px; font-weight:700; color:#8A6B3F; background:#F3ECDD; border:1px dashed #D8C7A8; border-radius:99px; padding:9px 18px">Manel is getting this one</span>
             </sc-if>
             <sc-if value="{{ item.claimable }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ item.toggle }}" style="flex-shrink:0; cursor:pointer; font-family:'Karla',sans-serif; font-size:14px; font-weight:700; border-radius:99px; padding:9px 18px; border:{{ item.btnBorder }}; background:{{ item.btnBg }}; color:{{ item.btnColor }}; transition:all 0.15s" style-hover="transform:scale(1.06) rotate(-1deg)">{{ item.btnLabel }}</button>
+              <button onClick="{{ item.toggle }}" disabled="{{ item.btnDisabled }}" aria-disabled="{{ item.btnDisabled }}" style="flex-shrink:0; cursor:{{ item.btnCursor }}; font-family:'Karla',sans-serif; font-size:14px; font-weight:700; border-radius:99px; padding:9px 18px; border:{{ item.btnBorder }}; background:{{ item.btnBg }}; color:{{ item.btnColor }}; transition:all 0.15s" style-hover="transform:scale(1.06) rotate(-1deg)">{{ item.btnLabel }}</button>
             </sc-if>
           </div>
         </sc-for>
@@ -125,7 +146,7 @@
             <sc-if value="{{ m.url }}" hint-placeholder-val="{{ false }}">
               <a href="{{ m.url }}" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:600; color:#8A6B3F; text-decoration:none; align-self:flex-start; background:#FBF7EF; border:1px solid #E6DCC8; border-radius:99px; padding:3px 10px" style-hover="background:#F7F0E2">View item ↗</a>
             </sc-if>
-            <button onClick="{{ m.toggle }}" style="align-self:flex-start; cursor:pointer; font-family:'Karla',sans-serif; font-size:12.5px; font-weight:700; border-radius:99px; padding:6px 14px; border:{{ m.btnBorder }}; background:{{ m.btnBg }}; color:{{ m.btnColor }}; transition:all 0.15s">{{ m.btnLabel }}</button>
+            <button onClick="{{ m.toggle }}" disabled="{{ m.btnDisabled }}" aria-disabled="{{ m.btnDisabled }}" style="align-self:flex-start; cursor:{{ m.btnCursor }}; font-family:'Karla',sans-serif; font-size:12.5px; font-weight:700; border-radius:99px; padding:6px 14px; border:{{ m.btnBorder }}; background:{{ m.btnBg }}; color:{{ m.btnColor }}; transition:all 0.15s">{{ m.btnLabel }}</button>
           </div>
         </sc-for>
       </div>
@@ -202,46 +223,102 @@ const MOM = [
   { id:'m-cream', cat:'Comfort', name:'Nipple cream', note:'Lanolin care if necessary', url:'https://amzn.eu/d/0hFZqZGe' },
 ];
 
-const LS_KEY = 'joseph-registry-claims';
-
 class Component extends DCLogic {
-  state = { claims: {} };
+  state = {
+    claims: {},
+    pending: {},
+    claimService: 'connecting',
+    claimMessage: 'Connecting secure claims…',
+    uid: ''
+  };
   componentDidMount() {
     if (window.__registryDB) { this._connectDB(); return; }
+    if (window.__registryStatus?.state === 'error') { this._setUnavailable(); return; }
     window.addEventListener('registry-db-ready', () => this._connectDB(), { once: true });
-    // If no Firebase config after a moment, load local claims instead.
-    setTimeout(() => { if (!this._usingDB) this._loadLocal(); }, 1500);
+    window.addEventListener('registry-db-error', () => this._setUnavailable(), { once: true });
+  }
+  _setUnavailable(message = 'Claims are temporarily unavailable. Please try again later.') {
+    this.setState({ claimService: 'error', claimMessage: message });
   }
   _connectDB() {
     if (this._usingDB) return;
     this._usingDB = true;
     const R = window.__registryDB;
-    R.onSnapshot(R.ref,
-      snap => this.setState({ claims: (snap.data() || {}).claims || {} }),
-      err => console.warn('registry snapshot error', err));
+    this._unsubscribeClaims = R.subscribe(
+      snap => {
+        const claims = {};
+        snap.forEach(doc => { claims[doc.id] = doc.data(); });
+        this.setState({ claims, uid: R.uid, claimService: 'ready', claimMessage: '' });
+      },
+      err => {
+        console.warn('registry snapshot error', err);
+        this._setUnavailable();
+      });
   }
-  _loadLocal() {
-    try { const s = localStorage.getItem(LS_KEY); if (s) this.setState({ claims: JSON.parse(s) }); } catch (e) {}
+  componentWillUnmount() {
+    if (this._unsubscribeClaims) this._unsubscribeClaims();
   }
-  toggle(id) {
-    const next = !this.state.claims[id];
-    this.setState(st => ({ claims: { ...st.claims, [id]: next } }));
-    if (this._usingDB) {
-      const R = window.__registryDB;
-      R.setDoc(R.ref, { claims: { [id]: next } }, { merge: true })
-        .catch(e => console.warn('claim write failed', e));
-    } else {
-      try { localStorage.setItem(LS_KEY, JSON.stringify({ ...this.state.claims, [id]: next })); } catch (e) {}
+  async toggle(id) {
+    if (this.state.claimService !== 'ready' || this.state.pending[id]) return;
+    const existing = this.state.claims[id];
+    if (existing && existing.ownerUid !== this.state.uid) {
+      this.setState({ claimMessage: 'This gift has already been claimed.' });
+      return;
+    }
+    this.setState(st => ({ pending: { ...st.pending, [id]: true }, claimMessage: '' }));
+    try {
+      if (existing) {
+        await window.__registryDB.release(id);
+        this.setState(st => {
+          const claims = { ...st.claims };
+          delete claims[id];
+          return { claims };
+        });
+      } else {
+        await window.__registryDB.claim(id);
+        this.setState(st => ({ claims: { ...st.claims, [id]: { ownerUid: st.uid } } }));
+      }
+    } catch (error) {
+      console.warn('claim write failed', error);
+      const conflict = !existing && (error?.code === 'permission-denied' || error?.code === 'already-exists');
+      this.setState({
+        claimMessage: conflict
+          ? 'Someone just claimed this gift. Please choose another one.'
+          : 'Claims are temporarily unavailable. Please try again.'
+      });
+    } finally {
+      this.setState(st => ({ pending: { ...st.pending, [id]: false } }));
     }
   }
   renderVals() {
     const claims = this.state.claims;
+    const ready = this.state.claimService === 'ready';
     let total = 0, claimed = 0;
     const colorFor = h => `oklch(0.78 0.055 ${h})`;
+    const buttonState = (id, color) => {
+      const claim = claims[id];
+      const isClaimed = !!claim;
+      const isMine = isClaimed && claim.ownerUid === this.state.uid;
+      const pending = !!this.state.pending[id];
+      const disabled = !ready || pending || (isClaimed && !isMine);
+      return {
+        isClaimed,
+        btnLabel: pending ? 'Saving…' : !ready
+          ? (this.state.claimService === 'connecting' ? 'Connecting…' : 'Claims unavailable')
+          : isMine ? 'Undo my claim' : isClaimed ? '✓ Claimed' : "I'll get this",
+        btnBg: isClaimed ? color : '#FFFFFF',
+        btnColor: isClaimed ? '#4A4436' : '#5C5546',
+        btnBorder: isClaimed ? '1px solid transparent' : '1px solid #DDD2BC',
+        btnDisabled: disabled,
+        btnCursor: disabled ? 'not-allowed' : 'pointer',
+        toggle: () => this.toggle(id),
+      };
+    };
     const sections = DATA.map(sec => ({
       title: sec.title, subtitle: sec.subtitle, intro: sec.intro || '', color: colorFor(sec.hue),
       items: sec.items.map(it => {
-        const c = !!claims[it.id];
+        const button = buttonState(it.id, colorFor(sec.hue));
+        const c = button.isClaimed;
         if (!it.reserved) { total++; if (c) claimed++; }
         return {
           ...it,
@@ -249,31 +326,28 @@ class Component extends DCLogic {
           hasLinks: it.links.length > 0,
           rowOpacity: c && !it.reserved ? 0.55 : 1,
           strike: c && !it.reserved ? 'line-through' : 'none',
-          btnLabel: c ? '✓ Claimed' : "I'll get this",
-          btnBg: c ? colorFor(sec.hue) : '#FFFFFF',
-          btnColor: c ? '#4A4436' : '#5C5546',
-          btnBorder: c ? '1px solid transparent' : '1px solid #DDD2BC',
-          toggle: () => this.toggle(it.id),
+          ...button,
         };
       }),
     }));
     const momItems = MOM.map(m => {
-      const c = !!claims[m.id];
+      const button = buttonState(m.id, '#EFE7D8');
+      const c = button.isClaimed;
       total++; if (c) claimed++;
       return {
         ...m,
         rowOpacity: c ? 0.55 : 1,
         strike: c ? 'line-through' : 'none',
-        btnLabel: c ? '✓ Claimed' : "I'll get this",
-        btnBg: c ? '#EFE7D8' : '#FFFFFF',
-        btnColor: '#5C5546',
-        btnBorder: c ? '1px solid transparent' : '1px solid #DDD2BC',
-        toggle: () => this.toggle(m.id),
+        ...button,
       };
     });
     return {
       sections, momItems,
       totalCount: total, claimedCount: claimed,
+      claimMessage: this.state.claimMessage,
+      claimNoticeBg: this.state.claimService === 'error' ? '#FFF1EC' : '#F1F0E2',
+      claimNoticeBorder: this.state.claimService === 'error' ? '#E8B5A5' : '#DDD9C0',
+      claimNoticeColor: this.state.claimService === 'error' ? '#7A3E2E' : '#5C6046',
       showMom: this.props.showMomSection ?? true,
     };
   }
