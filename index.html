@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<title>Joseph's Baby Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#FBF7EF; }
+  body { font-family:'Karla',sans-serif; color:#3E3A33; -webkit-font-smoothing:antialiased; }
+  a { color:#8A6B3F; text-decoration-color:#D8C7A8; }
+  a:hover { color:#6B5230; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px);} to { opacity:1; transform:none;} }
+  @keyframes bob { 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-5px);} }
+</style>
+<script src="./image-slot.js"></script>
+<script>
+  /* SHARED CLAIMING (Firebase) - OPTIONAL.
+     Paste your own Firebase web config below to sync claims live
+     across everyone. Leave it blank and the page still works,
+     saving claims in each visitor's own browser. */
+  window.REGISTRY_FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+  (function () {
+    var cfg = window.REGISTRY_FIREBASE_CONFIG;
+    if (!cfg || !cfg.projectId) return;
+    Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js")
+    ]).then(function (mods) {
+      var appMod = mods[0], fs = mods[1];
+      var db = fs.getFirestore(appMod.initializeApp(cfg));
+      window.__registryDB = {
+        onSnapshot: fs.onSnapshot,
+        setDoc: fs.setDoc,
+        ref: fs.doc(db, "registries", "joseph")
+      };
+      window.dispatchEvent(new Event("registry-db-ready"));
+    }).catch(function (e) {
+      console.warn("Firebase init failed - falling back to local claims.", e);
+    });
+  })();
+</script>
+</helmet>
+
+<div style="max-width:880px; margin:0 auto; padding:56px 28px 96px">
+
+  <header style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; padding-bottom:36px">
+    <div style="width:180px; height:180px; border:6px solid #FFFFFF; border-radius:50%; box-shadow:0 4px 18px rgba(90,80,60,0.14); overflow:hidden">
+      <image-slot id="joseph-photo" shape="circle" src="./assets/joseph-illustration.png" placeholder="Drop Joseph's illustration or ultrasound here"></image-slot>
+    </div>
+    <p style="margin:0; font-size:13px; letter-spacing:0.22em; text-transform:uppercase; color:#9C927F">Baby registry</p>
+    <h1 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:58px; line-height:1.05; letter-spacing:-0.01em">Waiting for Joseph</h1>
+    <p style="margin:0; font-size:16px; color:#7A7263">Expected October 8, 2026 · Manel, waiting impatiently</p>
+    <p style="margin:10px 0 0; max-width:520px; font-size:17px; line-height:1.6; color:#5C5546; text-wrap:pretty">A little note from Manel — thank you for helping us welcome Joseph. If you'd like to gift something, pick an item below and tap <em>"I'll get this"</em> so no one doubles up. With love.</p>
+    <div style="max-width:560px; background:#F1F0E2; border:1px solid #DDD9C0; border-radius:12px; padding:12px 20px; font-size:15px; line-height:1.5; color:#5C6046"><strong>Pre-loved is very welcome!</strong> Reused and second-hand items are more than welcome for everything — except the Hygiene &amp; Health list, where we'd prefer new.</div>
+    <div style="margin-top:4px; font-size:14px; color:#9C927F">{{ claimedCount }} of {{ totalCount }} items claimed</div>
+  </header>
+
+  <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="5">
+    <section data-screen-label="{{ sec.title }}" style="margin-bottom:48px; animation:fadeUp 0.4s ease both">
+      <div style="display:flex; align-items:baseline; gap:12px; border-bottom:3px dashed {{ sec.color }}; padding-bottom:10px; margin-bottom:6px">
+        <h2 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:28px">{{ sec.title }}</h2>
+        <span style="font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:#9C927F">{{ sec.subtitle }}</span>
+      </div>
+      <sc-if value="{{ sec.intro }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:8px 0 4px; font-size:14.5px; color:#8A8171; font-style:italic">{{ sec.intro }}</p>
+      </sc-if>
+      <div style="display:flex; flex-direction:column; gap:0">
+        <sc-for list="{{ sec.items }}" as="item" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center; gap:16px; padding:16px 18px; margin-top:12px; background:#FFFFFF; border:1px solid #EFE7D8; border-radius:18px; box-shadow:0 2px 8px rgba(120,105,80,0.05); opacity:{{ item.rowOpacity }}">
+            <span style="flex-shrink:0; width:14px; height:14px; border-radius:50%; background:{{ sec.color }}"></span>
+            <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+              <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap">
+                <span style="font-size:17px; font-weight:600; text-decoration:{{ item.strike }}">{{ item.name }}</span>
+                <sc-if value="{{ item.qty }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-size:13px; color:#9C927F; background:#F3ECDD; border-radius:99px; padding:2px 10px">× {{ item.qty }}</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ item.note }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:14px; color:#8A8171">{{ item.note }}</span>
+              </sc-if>
+              <sc-if value="{{ item.hasLinks }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px">
+                  <sc-for list="{{ item.links }}" as="lnk" hint-placeholder-count="1">
+                    <a href="{{ lnk.url }}" target="_blank" rel="noopener" style="font-size:13px; font-weight:600; color:#8A6B3F; background:#FFFFFF; border:1px solid #E6DCC8; border-radius:99px; padding:4px 12px; text-decoration:none" style-hover="background:#F7F0E2">{{ lnk.label }} ↗</a>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ item.reserved }}" hint-placeholder-val="{{ false }}">
+              <span style="flex-shrink:0; font-size:13px; font-weight:700; color:#8A6B3F; background:#F3ECDD; border:1px dashed #D8C7A8; border-radius:99px; padding:9px 18px">Manel is getting this one</span>
+            </sc-if>
+            <sc-if value="{{ item.claimable }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ item.toggle }}" style="flex-shrink:0; cursor:pointer; font-family:'Karla',sans-serif; font-size:14px; font-weight:700; border-radius:99px; padding:9px 18px; border:{{ item.btnBorder }}; background:{{ item.btnBg }}; color:{{ item.btnColor }}; transition:all 0.15s" style-hover="transform:scale(1.06) rotate(-1deg)">{{ item.btnLabel }}</button>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-for>
+
+  <sc-if value="{{ showMom }}" hint-placeholder-val="{{ true }}">
+    <details style="margin-top:24px; background:#F6F0E3; border:1px solid #EBE1CD; border-radius:14px; padding:6px 22px">
+      <summary style="cursor:pointer; padding:14px 0; font-family:'Fredoka',sans-serif; font-size:20px; font-weight:600; color:#6B6250">For Manel — postpartum care <span style="font-family:'Karla',sans-serif; font-size:13px; font-weight:400; color:#9C927F; margin-left:8px">only once everything for Joseph is covered</span></summary>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; padding:6px 0 20px">
+        <sc-for list="{{ momItems }}" as="m" hint-placeholder-count="4">
+          <div style="background:#FFFFFF; border:1px solid #EFE7D8; border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; opacity:{{ m.rowOpacity }}">
+            <span style="font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#B0A68F">{{ m.cat }}</span>
+            <span style="font-size:15px; font-weight:600; text-decoration:{{ m.strike }}">{{ m.name }}</span>
+            <span style="font-size:13px; color:#8A8171">{{ m.note }}</span>
+            <sc-if value="{{ m.url }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ m.url }}" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:600; color:#8A6B3F; text-decoration:none; align-self:flex-start; background:#FBF7EF; border:1px solid #E6DCC8; border-radius:99px; padding:3px 10px" style-hover="background:#F7F0E2">View item ↗</a>
+            </sc-if>
+            <button onClick="{{ m.toggle }}" style="align-self:flex-start; cursor:pointer; font-family:'Karla',sans-serif; font-size:12.5px; font-weight:700; border-radius:99px; padding:6px 14px; border:{{ m.btnBorder }}; background:{{ m.btnBg }}; color:{{ m.btnColor }}; transition:all 0.15s">{{ m.btnLabel }}</button>
+          </div>
+        </sc-for>
+      </div>
+    </details>
+  </sc-if>
+
+  <section data-screen-label="Delivery address" style="margin-top:40px; background:#F6F0E3; border:1px solid #EBE1CD; border-radius:14px; padding:24px 28px; display:flex; flex-direction:column; gap:6px">
+    <h2 style="margin:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:24px">Delivery address</h2>
+    <p style="margin:0; font-size:14px; color:#9C927F">Where to send gifts if you're ordering online</p>
+    <p style="margin:8px 0 0; font-size:17px; line-height:1.55; color:#4A4436">Manel Rhaiem<br>Schönhauser Allee 72<br>Gartenhaus, 3. Etage<br>10437 Berlin, Germany</p>
+  </section>
+
+  <footer style="text-align:center; margin-top:64px; font-size:14px; color:#9C927F">Thank you for being part of Joseph's welcome party.</footer>
+</div>
+
+<template id="__bundler_thumbnail">
+  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:oklch(0.92 0.045 90)">
+    <div style="font-family:sans-serif;font-weight:700;font-size:52%;color:oklch(0.45 0.06 140)">J</div>
+  </div>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showMomSection&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}}">
+const DATA = [
+  { key:'travel', title:'Travel & Transport', subtitle:'Out and about', hue:140, items:[
+    { id:'stroller', name:'Stroller (3-in-1 convertible)', qty:'1', note:'Car seat included — Manel is treating herself to this one', reserved:true, links:[{label:'Joie Versatrax — Smyths', url:'https://www.smythstoys.com/de/de-de/baby/kinderwagen/kombikinderwagen-und-kinderwagen-3-in-1/joie-versatrax-e-trio-kinderwagen-3-in-1-pebble-grau/p/242916'}] },
+    { id:'diaperbag', name:'Diaper bag', qty:'1', links:[{label:'Olend Big Ona', url:'https://www.olend.net/products/big-ona-soft-bag?srsltid=AfmBOop8j6sNiRSV13sJ5UJfRSIIBUQ5_XmMuxopK37r01S5PaI85f4m&variant=48389832081743'}] },
+    { id:'carrier', name:'Baby carrier or wrap', qty:'1', links:[{label:'Flybaby carrier', url:'https://flybaby.berlin/en/products/flybaby-carrier?variant=51668678410580#muun-shade-selector'}] },
+  ]},
+  { key:'sleep', title:'Sleep', subtitle:'Sweet dreams', hue:240, items:[
+    { id:'crib', name:'Bedside crib / bassinet', qty:'1', note:'Mattress included', links:[{label:'Chicco Next2Me — Babymarkt', url:'https://www.babymarkt.com/de/p/chicco-beistellbett-next2me-magic-evo-desert-taupe-7843216/'}] },
+    { id:'sack-tog3', name:'Sleep sack — velour, TOG 3', qty:'1', note:'For colder months', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-velours-imprime-baleine-tog-3-co2-adriatic/A0E2N01.html#start=1'}] },
+    { id:'sack-tog2', name:'Sleep sack — cotton, TOG 2', qty:'1', note:'For milder nights', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/gigoteuse-literie-couverture/gigoteuse-bebe-en-coton-tog-2-marshmallow-smoking/A0EX401.html#start=1'}] },
+    { id:'sack-nb', name:'Sleep sack — newborn size', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0cFuPHQP'}] },
+    { id:'sheets-1', name:'Fitted sheets — set 1', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0b7S9Pg6'}] },
+    { id:'sheets-2', name:'Fitted sheets — set 2', qty:'2', links:[{label:'Amazon', url:'https://amzn.eu/d/0gf24rIN'}] },
+    { id:'monitor', name:'Baby monitor', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0b2cpVPh'}] },
+    { id:'nightlight', name:'Nightlight', qty:'1', links:[{label:'Paddy Panda — Mega-Light', url:'https://www.mega-light.de/megalight-led-kinder-nachtlicht-paddy-panda-dimmbar-mit-timer.html'}] },
+    { id:'nest', name:'Baby nest / lounger', qty:'1', links:[{label:'Zöllner Nido Dinos — BabyOne', url:'https://www.babyone.de/kuschelnest/zoellner/kuschelnest-nido-dinos/2000583474906.html'}] },
+    { id:'towel', name:'Baby towels', qty:'2', links:[{label:'Gloop organic cotton', url:'https://gloopbaby.com/produto/colecoes-bebe/little-garden/toalha-de-banho-para-bebe-em-algodao-organico-little-garden/'}] },
+  ]},
+  { key:'hygiene', title:'Hygiene & Health', subtitle:'New items only, please', hue:90, items:[
+    { id:'bathtub', name:'Baby bathtub', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/041VRhHK'}] },
+    { id:'baththermo', name:'Bath thermometer', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/057qMM10'}] },
+    { id:'thermo-kit', name:'Body thermometer & grooming kit', qty:'1', note:'Nail clippers, brush', links:[{label:'Amazon', url:'https://amzn.eu/d/04PZh5K4'}] },
+    { id:'diapers', name:'Newborn diapers (size 1)', qty:'1–2 packs', note:"Don't stock up too much at first", links:[{label:'Amazon', url:'https://amzn.eu/d/0hshBp7W'}] },
+    { id:'wipes', name:'Wet wipes for baby', qty:'1 pack', links:[{label:'Amazon', url:'https://amzn.eu/d/02xSkuME'}] },
+    { id:'liniment', name:'Cotton pads & liniment', qty:'1 set', links:[] },
+  ]},
+  { key:'feeding', title:'Feeding', subtitle:'Mealtime', hue:55, items:[
+    { id:'bottles', name:'Baby bottles (small & large)', qty:'4–6', note:'Useful even if breastfeeding', links:[{label:'Philips Natural gift set', url:'https://www.philips.co.uk/c-p/SCD837_11/natural-response-baby-gift-set'}] },
+    { id:'brush', name:'Bottle brush', qty:'1', links:[] },
+    { id:'bibs', name:'Bibs', qty:'10+', note:'You can never have too many', links:[{label:'Amazon', url:'https://amzn.eu/d/04mq0ggZ'}] },
+    { id:'pillow', name:'Nursing pillow', qty:'1', note:"Also great for mom's comfort", links:[{label:'Amazon', url:'https://amzn.eu/d/0dH4dms2'}] },
+    { id:'muslins', name:'Cotton muslins', qty:'5–6', note:'Multi-purpose', links:[{label:'Amazon', url:'https://amzn.eu/d/06nGikGW'}] },
+  ]},
+  { key:'extra', title:'Additional baby things', subtitle:'Nice to have', hue:140, intro:'Please pick from here only once the essentials above are covered.', items:[
+    { id:'gym', name:'Activity gym with arches', qty:'1', links:[{label:'Lovevery Play Gym', url:'https://lovevery.eu/products/the-play-gym'}] },
+    { id:'bouncer', name:'Comfortable bouncer', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0dwva62E'}] },
+    { id:'rattles', name:'Rattles & teething toys', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/08nvqJVO'}] },
+    { id:'musical', name:'Musical toys', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/041xALFK'}] },
+    { id:'bodies', name:'Long-sleeve bodysuits', qty:'1 set', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/body/lot-de-bodies-manches-longues-en-coton-uni-bebe-variante-1/A0H0000.html'}] },
+    { id:'doudou', name:'Doudou (security blanket)', qty:'1', links:[{label:'Moonie Bunny', url:'https://moonie.eu/en_GB/p/DOUDOU-BUNNY/175'}] },
+    { id:'silibibs', name:'Silicone bibs', qty:'1–2', links:[{label:'Gloop', url:'https://gloopbaby.com/produto/hora-da-refeicao/babete-silicone/babete-em-silicone-burlywood/'}] },
+  ]},
+];
+
+const MOM = [
+  { id:'m-pads', cat:'Protection', name:'Maternity pads', note:'"Night" or extra-long models', url:'https://amzn.eu/d/00tNsqyi' },
+  { id:'m-liners', cat:'Protection', name:'Panty liners', note:'For the end of lochia', url:'https://amzn.eu/d/04pNjzTh' },
+  { id:'m-panties', cat:'Underwear', name:'Cotton or disposable panties', note:'One size up for comfort', url:'' },
+  { id:'m-foam', cat:'Local care', name:'Soothing foam', note:'Witch hazel type', url:'' },
+  { id:'m-compress', cat:'Local care', name:'Compresses', note:'Sterile or cold compresses', url:'' },
+  { id:'m-nursingpads', cat:'Comfort', name:'Nursing pads', note:'Prevents leaks when breastfeeding', url:'https://amzn.eu/d/0fQGcwC8' },
+  { id:'m-cream', cat:'Comfort', name:'Nipple cream', note:'Lanolin care if necessary', url:'https://amzn.eu/d/0hFZqZGe' },
+];
+
+const LS_KEY = 'joseph-registry-claims';
+
+class Component extends DCLogic {
+  state = { claims: {} };
+  componentDidMount() {
+    if (window.__registryDB) { this._connectDB(); return; }
+    window.addEventListener('registry-db-ready', () => this._connectDB(), { once: true });
+    // If no Firebase config after a moment, load local claims instead.
+    setTimeout(() => { if (!this._usingDB) this._loadLocal(); }, 1500);
+  }
+  _connectDB() {
+    if (this._usingDB) return;
+    this._usingDB = true;
+    const R = window.__registryDB;
+    R.onSnapshot(R.ref,
+      snap => this.setState({ claims: (snap.data() || {}).claims || {} }),
+      err => console.warn('registry snapshot error', err));
+  }
+  _loadLocal() {
+    try { const s = localStorage.getItem(LS_KEY); if (s) this.setState({ claims: JSON.parse(s) }); } catch (e) {}
+  }
+  toggle(id) {
+    const next = !this.state.claims[id];
+    this.setState(st => ({ claims: { ...st.claims, [id]: next } }));
+    if (this._usingDB) {
+      const R = window.__registryDB;
+      R.setDoc(R.ref, { claims: { [id]: next } }, { merge: true })
+        .catch(e => console.warn('claim write failed', e));
+    } else {
+      try { localStorage.setItem(LS_KEY, JSON.stringify({ ...this.state.claims, [id]: next })); } catch (e) {}
+    }
+  }
+  renderVals() {
+    const claims = this.state.claims;
+    let total = 0, claimed = 0;
+    const colorFor = h => `oklch(0.78 0.055 ${h})`;
+    const sections = DATA.map(sec => ({
+      title: sec.title, subtitle: sec.subtitle, intro: sec.intro || '', color: colorFor(sec.hue),
+      items: sec.items.map(it => {
+        const c = !!claims[it.id];
+        if (!it.reserved) { total++; if (c) claimed++; }
+        return {
+          ...it,
+          claimable: !it.reserved,
+          hasLinks: it.links.length > 0,
+          rowOpacity: c && !it.reserved ? 0.55 : 1,
+          strike: c && !it.reserved ? 'line-through' : 'none',
+          btnLabel: c ? '✓ Claimed' : "I'll get this",
+          btnBg: c ? colorFor(sec.hue) : '#FFFFFF',
+          btnColor: c ? '#4A4436' : '#5C5546',
+          btnBorder: c ? '1px solid transparent' : '1px solid #DDD2BC',
+          toggle: () => this.toggle(it.id),
+        };
+      }),
+    }));
+    const momItems = MOM.map(m => {
+      const c = !!claims[m.id];
+      total++; if (c) claimed++;
+      return {
+        ...m,
+        rowOpacity: c ? 0.55 : 1,
+        strike: c ? 'line-through' : 'none',
+        btnLabel: c ? '✓ Claimed' : "I'll get this",
+        btnBg: c ? '#EFE7D8' : '#FFFFFF',
+        btnColor: '#5C5546',
+        btnBorder: c ? '1px solid transparent' : '1px solid #DDD2BC',
+        toggle: () => this.toggle(m.id),
+      };
+    });
+    return {
+      sections, momItems,
+      totalCount: total, claimedCount: claimed,
+      showMom: this.props.showMomSection ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>
