@@ -27,17 +27,19 @@ Friends and family can browse gift ideas, follow helpful shopping links, and mar
 └── firebase.json   # Firebase auth, rules, and hosting config
 ```
 
-There is no build step and no package installation required — it is a small, static website. 🎉
+There is no build step and the project has no application dependencies — the JavaScript runs directly in the browser. 🎉
 
 ## 🚀 Run it locally
 
-Start any static file server from the repository root. For example, with Python:
+Because this is a browser-based JavaScript site, it still needs to be served over HTTP for local testing. Using Node.js:
 
 ```bash
-python3 -m http.server 8000
+npx --yes serve . --listen 8000
 ```
 
 Then visit [http://localhost:8000](http://localhost:8000).
+
+The server is only delivering the static files; it does not run the application logic. If Node.js is unavailable, `python3 -m http.server 8000` is an equivalent convenience command, not a Python dependency of the project.
 
 ## ☁️ Deploy it
 
@@ -51,8 +53,6 @@ Serve the repository root with any static hosting provider, such as GitHub Pages
 ## 🔥 Secure shared claiming with Firebase
 
 Claims are stored as individual documents in Firebase Firestore. Visitors sign in anonymously, so there is no login screen and no personal information is collected. Firestore Security Rules ensure that only the browser that made a claim can undo it.
-
-To configure a new environment:
 
 This repository is connected to the `joseph-baby-registry` Firebase project. For a different environment:
 
