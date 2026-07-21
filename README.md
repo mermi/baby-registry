@@ -24,7 +24,8 @@ Friends and family can browse gift ideas, follow helpful shopping links, and mar
 ├── image-slot.js   # Image-slot web component
 ├── assets/         # Joseph's illustration and other images
 ├── firestore.rules # Server-enforced claim permissions
-└── firebase.json   # Firebase auth, rules, and hosting config
+├── firebase.json   # Firebase auth, rules, and hosting config
+└── .github/        # Automatic Firebase Hosting deployment
 ```
 
 There is no build step and the project has no application dependencies — the JavaScript runs directly in the browser. 🎉
@@ -43,12 +44,20 @@ The server is only delivering the static files; it does not run the application 
 
 ## ☁️ Deploy it
 
-Serve the repository root with any static hosting provider, such as GitHub Pages, Netlify, Vercel, or Firebase Hosting. The site only needs these paths:
+The production site is [joseph-baby-registry.web.app](https://joseph-baby-registry.web.app/). Every push to `main` automatically deploys Firebase Hosting through GitHub Actions using short-lived Google OIDC credentials; there is no stored Firebase token or service-account key.
+
+The automated workflow deploys only these public paths:
 
 - `index.html`
 - `support.js`
 - `image-slot.js`
 - `assets/`
+
+Authentication configuration and Firestore rules are intentionally excluded from automatic deployment. Release those manually after review:
+
+```bash
+npx --yes firebase-tools@15.24.0 deploy --only auth,firestore:rules
+```
 
 ## 🔥 Secure shared claiming with Firebase
 

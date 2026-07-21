@@ -16,7 +16,9 @@
       "README.md",
       ".gitignore",
       ".git/**",
+      ".github/**",
       ".firebase/**",
+      "gha-creds-*.json",
       "**/.*",
       "**/node_modules/**"
     ],
