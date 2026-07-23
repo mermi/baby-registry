@@ -13,7 +13,7 @@ service cloud.firestore {
         'monitor', 'nightlight', 'nest', 'towel',
         'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'wipes', 'liniment',
         'bottles', 'brush', 'bibs', 'pillow', 'muslins',
-        'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs',
+        'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs', 'cutlery',
         'm-pads', 'm-liners', 'm-panties', 'm-foam', 'm-compress',
         'm-nursingpads', 'm-cream'
       ];

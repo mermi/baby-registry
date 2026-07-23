@@ -226,7 +226,7 @@ const CATALOG = [
     { id:'brush', qty:'1', links:[] },
     { id:'bibs', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/04mq0ggZ'}] },
     { id:'pillow', qty:'1', links:[{label:'Amazon', url:'https://amzn.eu/d/0dH4dms2'}] },
-    { id:'muslins', qty:'5–6', links:[{label:'Amazon', url:'https://amzn.eu/d/06nGikGW'}] },
+    { id:'muslins', qty:'', links:[{label:'Amazon', url:'https://amzn.eu/d/06nGikGW'}] },
   ]},
   { key:'extra', hue:140, items:[
     { id:'gym', qty:'1', links:[{label:'Lovevery Play Gym', url:'https://lovevery.eu/products/the-play-gym'}] },
@@ -236,6 +236,7 @@ const CATALOG = [
     { id:'bodies', qty:'1 set', links:[{label:'Petit Bateau', url:'https://www.petit-bateau.fr/bebe/sous-vetements-et-nuit/body/lot-de-bodies-manches-longues-en-coton-uni-bebe-variante-1/A0H0000.html'}] },
     { id:'doudou', qty:'1', links:[{label:'Moonie Bunny', url:'https://moonie.eu/en_GB/p/DOUDOU-BUNNY/175'}] },
     { id:'silibibs', qty:'1–2', links:[{label:'Gloop', url:'https://gloopbaby.com/produto/hora-da-refeicao/babete-silicone/babete-em-silicone-burlywood/'}] },
+    { id:'cutlery', qty:'1', links:[{label:'Gloop Mango cutlery set', url:'https://gloopbaby.com/produto/hora-da-refeicao/conjunto-talheres/conjunto-de-talheres-mango/'}] },
   ]},
 ];
 
@@ -262,7 +263,7 @@ const I18N = {
     heroNote: 'A little note from Manel — thank you for helping me welcome Joseph. If you would like to gift something, pick an item below and tap “I’ll get this” so no one doubles up. With love.',
     preLovedTitle: 'Pre-loved is very welcome!',
     preLovedBody: 'Reused and second-hand items are more than welcome for everything — except the Hygiene & Health list, where I would prefer new.',
-    reservedLabel: 'Manel is getting this one',
+    reservedLabel: 'Already purchased by Manel',
     momTitle: 'For Manel — postpartum care',
     momSubtitle: 'only once everything for Joseph is covered',
     viewItem: 'View item',
@@ -289,7 +290,7 @@ const I18N = {
       extra: { title:'Additional baby things', subtitle:'Nice to have', intro:'Please pick from here only once the essentials above are covered.' },
     },
     items: {
-      stroller: { name:'Stroller (3-in-1 convertible)', note:'Car seat included — Manel is treating herself to this one' },
+      stroller: { name:'Stroller (3-in-1 convertible)', note:'Car seat included — already purchased by Manel' },
       diaperbag: { name:'Diaper bag' }, carrier: { name:'Baby carrier or wrap' },
       crib: { name:'Bedside crib / bassinet', note:'Mattress included' },
       'sack-tog3': { name:'Sleep sack — velour, TOG 3', note:'For colder months' },
@@ -310,6 +311,7 @@ const I18N = {
       rattles: { name:'Rattles & teething toys' }, musical: { name:'Musical toys' },
       bodies: { name:'Long-sleeve bodysuits' }, doudou: { name:'Doudou (security blanket)' },
       silibibs: { name:'Silicone bibs' },
+      cutlery: { name:'Baby cutlery set' },
     },
     momItems: {
       'm-pads': { cat:'Protection', name:'Maternity pads', note:'“Night” or extra-long models' },
@@ -333,7 +335,7 @@ const I18N = {
     heroNote: 'Un petit mot de Manel — merci de m’aider à accueillir Joseph. Si vous souhaitez offrir quelque chose, choisissez un article ci-dessous et cliquez sur « Je m’en occupe » afin d’éviter les doublons. Avec amour.',
     preLovedTitle: 'Les articles de seconde main sont les bienvenus !',
     preLovedBody: 'Les objets réutilisés et d’occasion sont les bienvenus pour toute la liste — sauf pour la rubrique Hygiène et santé, où je préfère des articles neufs.',
-    reservedLabel: 'Manel s’occupe de celui-ci',
+    reservedLabel: 'Déjà achetée par Manel',
     momTitle: 'Pour Manel — soins post-partum',
     momSubtitle: 'uniquement lorsque tout le nécessaire pour Joseph est couvert',
     viewItem: 'Voir l’article',
@@ -360,7 +362,7 @@ const I18N = {
       extra: { title:'Autres essentiels pour bébé', subtitle:'Les petits plus', intro:'Merci de choisir dans cette rubrique uniquement lorsque les essentiels ci-dessus sont couverts.' },
     },
     items: {
-      stroller: { name:'Poussette combinée (3-en-1)', note:'Siège-auto inclus — Manel s’offre celle-ci' },
+      stroller: { name:'Poussette combinée (3-en-1)', note:'Siège-auto inclus — déjà achetée par Manel' },
       diaperbag: { name:'Sac à langer' }, carrier: { name:'Porte-bébé ou écharpe de portage' },
       crib: { name:'Berceau cododo', note:'Matelas inclus' },
       'sack-tog3': { name:'Gigoteuse — velours, TOG 3', note:'Pour les mois les plus froids' },
@@ -381,6 +383,7 @@ const I18N = {
       rattles: { name:'Hochets et jouets de dentition' }, musical: { name:'Jouets musicaux' },
       bodies: { name:'Bodies à manches longues' }, doudou: { name:'Doudou' },
       silibibs: { name:'Bavoirs en silicone' },
+      cutlery: { name:'Ensemble de couverts pour bébé' },
     },
     momItems: {
       'm-pads': { cat:'Protection', name:'Serviettes hygiéniques post-partum', note:'Modèles « nuit » ou extra-longs' },
