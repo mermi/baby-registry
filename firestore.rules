@@ -12,7 +12,7 @@ service cloud.firestore {
         'crib', 'sack-tog3', 'sack-tog2', 'sack-nb', 'sheets-1', 'sheets-2',
         'monitor', 'nightlight', 'nest', 'towel',
         'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'wipes', 'liniment',
-        'bottles', 'brush', 'bibs', 'pillow', 'muslins',
+        'bottles', 'bibs', 'pillow', 'muslins',
         'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs', 'cutlery',
         'm-pads', 'm-liners', 'm-panties', 'm-foam', 'm-compress',
         'm-nursingpads', 'm-cream'
