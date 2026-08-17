@@ -14,6 +14,7 @@ service cloud.firestore {
         'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'wipes', 'liniment',
         'bottles', 'booster-seat', 'bibs', 'pillow', 'muslins',
         'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs', 'cutlery',
+        'momcozy-set',
         'm-pads', 'm-liners', 'm-panties', 'm-foam', 'm-compress',
         'm-nursingpads', 'm-cream'
       ];
