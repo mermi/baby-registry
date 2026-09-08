@@ -9,11 +9,11 @@ service cloud.firestore {
     function validGiftId(itemId) {
       return itemId in [
         'diaperbag', 'carrier',
-        'crib', 'sack-tog3', 'sack-tog2', 'sack-nb', 'sheets-1', 'sheets-2',
+        'crib', 'sack-tog3', 'sack-tog2', 'sack-nb',
         'monitor', 'nightlight', 'nest', 'towel',
-        'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'wipes', 'liniment',
-        'bottles', 'booster-seat', 'bibs', 'pillow', 'muslins',
-        'gym', 'bouncer', 'rattles', 'musical', 'bodies', 'doudou', 'silibibs', 'cutlery',
+        'bathtub', 'baththermo', 'thermo-kit', 'diapers', 'liniment',
+        'bottles', 'booster-seat', 'bibs', 'muslins',
+        'gym', 'bouncer', 'rattles', 'bodies', 'doudou', 'silibibs', 'cutlery',
         'momcozy-set',
         'm-pads', 'm-liners', 'm-panties', 'm-foam', 'm-compress',
         'm-nursingpads', 'm-cream'
