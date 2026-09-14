@@ -198,7 +198,10 @@ function detectInitialLanguage() {
 const CATALOG = [
   { key:'travel', hue:140, items:[
     { id:'stroller', qty:'1', reserved:true, links:[{label:'Joie Versatrax — Smyths', url:'https://www.smythstoys.com/de/de-de/baby/kinderwagen/kombikinderwagen-und-kinderwagen-3-in-1/joie-versatrax-e-trio-kinderwagen-3-in-1-pebble-grau/p/242916'}] },
-    { id:'diaperbag', qty:'1', links:[{label:'Olend Big Ona', url:'https://www.olend.net/products/big-ona-soft-bag?srsltid=AfmBOop8j6sNiRSV13sJ5UJfRSIIBUQ5_XmMuxopK37r01S5PaI85f4m&variant=48389832081743'}] },
+    { id:'diaperbag', qty:'1', links:[
+      { label:'Paleet — Wickeltasche', url:'https://paleet.de/products/wickeltaschemitnassfach' },
+      { label:'Paleet — Wickelunterlage', url:'https://paleet.de/products/faltbare-wickeunterlage' },
+    ] },
     { id:'carrier', qty:'1', links:[{label:'Flybaby carrier', url:'https://flybaby.berlin/en/products/flybaby-carrier?variant=51668678410580#muun-shade-selector'}] },
   ]},
   { key:'sleep', hue:240, items:[
@@ -291,7 +294,7 @@ const I18N = {
     },
     items: {
       stroller: { name:'Stroller (3-in-1 convertible)', note:'Car seat included — already purchased by Manel' },
-      diaperbag: { name:'Diaper bag' }, carrier: { name:'Baby carrier or wrap' },
+      diaperbag: { name:'Diaper bag + foldable changing mat', note:'Two Paleet products, claimed together as one gift' }, carrier: { name:'Baby carrier or wrap' },
       crib: { name:'Bedside crib / bassinet', note:'Mattress included' },
       'sack-tog3': { name:'Striped baby snowsuit', note:'Second-hand · Size 3 months / 60 cm · For colder months' },
       'sack-tog2': { name:'Sleep sack — cotton, TOG 2', note:'For milder nights' },
@@ -365,7 +368,7 @@ const I18N = {
     },
     items: {
       stroller: { name:'Poussette combinée (3-en-1)', note:'Siège-auto inclus — déjà achetée par Manel' },
-      diaperbag: { name:'Sac à langer' }, carrier: { name:'Porte-bébé ou écharpe de portage' },
+      diaperbag: { name:'Sac à langer + matelas à langer pliable', note:'Deux articles Paleet à offrir ensemble' }, carrier: { name:'Porte-bébé ou écharpe de portage' },
       crib: { name:'Berceau cododo', note:'Matelas inclus' },
       'sack-tog3': { name:'Combipilote rayée bébé', note:'Seconde main · Taille 3 mois / 60 cm · Pour les mois les plus froids' },
       'sack-tog2': { name:'Gigoteuse — coton, TOG 2', note:'Pour les nuits plus douces' },
